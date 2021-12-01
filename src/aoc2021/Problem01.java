@@ -27,5 +27,12 @@ public class Problem01 {
         System.out.println(countIncreasedSlidingWindow3(stringToIntArray(input1)));
         System.out.println(countIncreased(stringToIntArray(input2)));
         System.out.println(countIncreasedSlidingWindow3(stringToIntArray(input2)));
+
+
+//        Output:
+//        7
+//        5
+//        1624
+//        1653
     }
 }
