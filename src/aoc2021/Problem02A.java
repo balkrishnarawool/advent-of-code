@@ -1,55 +1,60 @@
 package aoc2021;
 
-import aoc.Tuple2;
-
 import java.util.Arrays;
 
 import static aoc.Utils.fileToStringArray;
+import static aoc2021.Problem02A.Command.*;
 
 public class Problem02A {
 
     static private int calculatePositionProduct(Command[] comms) {
-        @SuppressWarnings({"unchecked"})
-        Tuple2<Integer> position = Arrays.stream(comms)
-                .reduce(Tuple2.of(0, 0), Problem02A::calculateNextPosition, Problem02A::combiner);
+        Position position = Arrays.stream(comms)
+                .reduce(Position.of(0, 0), Problem02A::calculateNextPosition, Problem02A::combiner);
 
-        return position.left * position.right;
+        return position.length * position.depth;
     }
 
-    @SuppressWarnings({"unchecked"})
-    private static Tuple2<Integer> calculateNextPosition(Tuple2<Integer> p, Command comm) {
+    private static Position calculateNextPosition(Position p, Command comm) {
         switch (comm.dir) {
-            case "forward" : return Tuple2.of(p.left + comm.units, p.right);
-            case "up" : return Tuple2.of(p.left, p.right - comm.units);
-            case "down" : return Tuple2.of(p.left, p.right + comm.units);
+            case "forward" : return Position.of(p.length + comm.units, p.depth);
+            case "up" : return Position.of(p.length, p.depth - comm.units);
+            case "down" : return Position.of(p.length, p.depth + comm.units);
             default : throw new RuntimeException("Wrong direction: " + comm.dir);
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    private static Tuple2<Integer> combiner(Tuple2<Integer> p1, Tuple2<Integer> p2) {
-        return Tuple2.of(p1.left + p2.left, p1.right + p2.right);
+    private static Position combiner(Position p1, Position p2) {
+        return Position.of(p1.length + p2.length, p1.depth + p2.depth);
     }
 
-    public static void main(String[] args) {
-        String[] input1 = fileToStringArray(Problem02A.class, "Problem02Input1.txt");
-        String[] input2 = fileToStringArray(Problem02A.class, "Problem02Input2.txt");
+    private static class Position {
+        public final int length;
+        public final int depth;
 
-        System.out.println(calculatePositionProduct(stringArrayToCommandArray(input1)));
-        System.out.println(calculatePositionProduct(stringArrayToCommandArray(input2)));
+        private Position(int length, int depth) {
+            this.length = length;
+            this.depth = depth;
+        }
+
+        private static Position of(int length, int depth) {
+            return new Position(length, depth);
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Command[] input1 = stringArrayToCommandArray(fileToStringArray(Problem02A.class, "Problem02Input1.txt"));
+        Command[] input2 = stringArrayToCommandArray(fileToStringArray(Problem02A.class, "Problem02Input2.txt"));
+
+        System.out.println(calculatePositionProduct(input1));
+        System.out.println(calculatePositionProduct(input2));
 
 //        Output
 //        150
 //        1762050
     }
 
-    private static Command[] stringArrayToCommandArray(String[] input1) {
-        return Arrays.stream(input1)
-                .map(Problem02A::stringToCommand)
-                .toArray(Command[]::new);
-    }
-
-    private static class Command {
+    static class Command {
         private final String dir;
         private final int units;
 
@@ -57,10 +62,17 @@ public class Problem02A {
             this.dir = dir;
             this.units = units;
         }
+
+        private static Command fromString(String str) {
+            String[] strs = str.split(" ");
+            return new Command(strs[0], Integer.parseInt(strs[1]));
+        }
+
+        static Command[] stringArrayToCommandArray(String[] input1) {
+            return Arrays.stream(input1)
+                    .map(Command::fromString)
+                    .toArray(Command[]::new);
+        }
     }
 
-    private static Command stringToCommand(String str) {
-        String[] strs = str.split(" ");
-        return new Command(strs[0], Integer.parseInt(strs[1]));
-    }
 }

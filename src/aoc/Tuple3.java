@@ -5,7 +5,7 @@ public class Tuple3<T> {
     public final T second;
     public final T third;
 
-    public Tuple3(T first, T second, T third) {
+    private Tuple3(T first, T second, T third) {
         this.first = first;
         this.second = second;
         this.third = third;
