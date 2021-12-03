@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
@@ -32,5 +33,21 @@ public class Utils {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public static char[][] stringArrayToChar2DArray(String[] strs) {
+        return Arrays.stream(strs)
+                .map(String::toCharArray)
+                .toArray(i -> new char[i][]);
+    }
+
+    public static char[][] copyOf(char[][] arr) {
+        char[][] copy = new char[arr.length][arr[0].length];
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                copy[i][j] = arr[i][j];
+            }
+        }
+        return copy;
     }
 }
