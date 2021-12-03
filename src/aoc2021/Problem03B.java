@@ -73,8 +73,8 @@ public class Problem03B {
         System.out.println(calculateLifeSupport(input2));
 
 //        Output
-//        198
-//        2498354
+//        230
+//        3277956
 
     }
 
