@@ -8,17 +8,22 @@ import static aoc.Utils.stringArrayToChar2DArray;
 public class Problem03A {
 
     static private long calculatePowerConsumption(char[][] report) {
-        int count = report[0].length;
-        long gammaRate = calculateGammaRate(report, count);
-        long epsilonRate = calculateEpsilonRate(gammaRate, count);
+        if (report.length == 0) { throw new RuntimeException("Report has no readings."); }
+        int bitCount = report[0].length;
+        long gammaRate = calculateGammaRate(report, bitCount);
+        long epsilonRate = calculateEpsilonRate(gammaRate, bitCount);
 
         return gammaRate * epsilonRate;
     }
 
-    private static long calculateGammaRate(char[][] report, int count) {
-        return IntStream.range(0, count)
-                .map(i -> sumBits(report, i) * 2 >= report.length ? 1 : 0)
+    private static long calculateGammaRate(char[][] report, int bitCount) {
+        return IntStream.range(0, bitCount)
+                .map(i -> getSignificantBit(report, i))
                 .reduce(0, (n, i) -> 2 * n + i);
+    }
+
+    private static int getSignificantBit(char[][] report, int i) {
+        return sumBits(report, i) * 2 >= report.length ? 1 : 0;
     }
 
     private static long sumBits(char[][] report, int i) {
@@ -27,10 +32,9 @@ public class Problem03A {
                 .count();
     }
 
-    private static long calculateEpsilonRate(long gammaRate, int count) {
-        return (long)(Math.pow(2, count)) - 1 - gammaRate;
+    private static long calculateEpsilonRate(long gammaRate, int bitCount) {
+        return (long)(Math.pow(2, bitCount)) - 1 - gammaRate;
     }
-
 
     public static void main(String[] args) {
         char[][] input1 = stringArrayToChar2DArray(fileToStringArray(Problem03A.class, "Problem03Input1.txt"));

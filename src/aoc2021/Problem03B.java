@@ -1,19 +1,18 @@
 package aoc2021;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static aoc.Utils.fileToStringArray;
-import static aoc.Utils.copyOf;
 import static aoc.Utils.stringArrayToChar2DArray;
 
 public class Problem03B {
 
     static private long calculateLifeSupport(char[][] report) {
-        int count = report[0].length;
-        char[] o2 = calculateO2(copyOf(report), count);
-        char[] co2 = calculateCO2(copyOf(report), count);
+        if (report.length == 0) { throw new RuntimeException("Report has no readings."); }
+        int bitCount = report[0].length;
+        char[] o2 = calculateO2(report, bitCount);
+        char[] co2 = calculateCO2(report, bitCount);
 
         return toDecimal(o2) * toDecimal(co2);
     }
@@ -24,20 +23,26 @@ public class Problem03B {
                 .reduce(0, (n, i) -> 2 * n + i);
     }
 
-    private static char[] calculateO2(char[][] report, int count) {
-        int i = 0;
-        while (i < count && report.length > 1) {
-            report = filteredReport(report, i);
-            i++;
-        }
-        return report[0];
+    private static char[] calculateO2(char[][] report, int bitCount) {
+        return IntStream.range(0, bitCount)
+                .boxed()
+                .reduce(report, Problem03B::filterReportWithSignificantBits, Problem03B::combiner)[0];
     }
 
-    private static char[][] filteredReport(char[][] report, int i) {
-        return Arrays.stream(report)
-                .map(chars -> sumBits(report, i) * 2 >= report.length ? (chars[i] == '1' ? chars : null) : (chars[i] == '0' ? chars : null))
-                .filter(Objects::nonNull)
-                .toArray(char[][]::new);
+    private static char[][] combiner(char[][] c1, char[][] c2) {
+        throw new RuntimeException("These calculations are not to be done in parallel. If you're using stream.parallel(), remove it!");
+    }
+
+    private static char[][] filterReportWithSignificantBits(char[][] report, int i) {
+        return report.length == 1
+                ? report
+                : Arrays.stream(report)
+                    .filter(chars -> hasBitSameAsSignificantBit(report, i, chars))
+                    .toArray(char[][]::new);
+    }
+
+    private static boolean hasBitSameAsSignificantBit(char[][] report, int i, char[] chars) {
+        return (sumBits(report, i) * 2 >= report.length) ? chars[i] == '1' : chars[i] == '0';
     }
 
     private static long sumBits(char[][] report, int i) {
@@ -46,20 +51,18 @@ public class Problem03B {
                 .count();
     }
 
-    private static char[] calculateCO2(char[][] report, int count) {
-        int i = 0;
-        while (i < count && report.length > 1) {
-            report = filteredReport2(report, i);
-            i++;
-        }
-        return report[0];
+    private static char[] calculateCO2(char[][] report, int bitCount) {
+        return IntStream.range(0, bitCount)
+                .boxed()
+                .reduce(report, Problem03B::filterReportWithInsignificantBits, Problem03B::combiner)[0];
     }
 
-    private static char[][] filteredReport2(char[][] report, int i) {
-        return Arrays.stream(report)
-                .map(chars -> sumBits(report, i) * 2 < report.length ? (chars[i] == '1' ? chars : null) : (chars[i] == '0' ? chars : null))
-                .filter(Objects::nonNull)
-                .toArray(char[][]::new);
+    private static char[][] filterReportWithInsignificantBits(char[][] report, int i) {
+        return report.length == 1
+                ? report
+                : Arrays.stream(report)
+                    .filter(chars -> !hasBitSameAsSignificantBit(report, i, chars))
+                    .toArray(char[][]::new);
     }
 
     public static void main(String[] args) {

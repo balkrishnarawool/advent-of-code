@@ -3,7 +3,6 @@ package aoc2021;
 import static aoc.Utils.fileToStringArray;
 import static aoc.Utils.stringToIntArray;
 
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class Problem01 {
