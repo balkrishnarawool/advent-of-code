@@ -1,7 +1,5 @@
 package aoc2021;
 
-import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,43 +36,8 @@ public class Problem06A {
 
         System.out.println(countFish80(input1[0]));
 
-        System.out.println(countFish256(input1[0]));
-
-
 //        Output
 
     }
 
-    private static long countFish256(String s) {
-        String[] sa = s.split(",");
-        List<Long> l = new ArrayList<>();
-        for (String str: sa) {
-            l.add(Long.parseLong(str));
-        }
-
-        return l.stream().map(Problem06A::countTotalOffsprings).reduce(0L, Long::sum);
-    }
-
-    private static Long countTotalOffsprings(Long l) {
-        Node n = Node.of(((256-(l+1))/7)+1);
-        n.addChildren(256-(l+1));
-
-        return n.countOffSpringsOfChildren() + 1;
-    }
-
-    @RequiredArgsConstructor(staticName = "of")
-    private static class Node { @NonNull long v; List<Node> children = new ArrayList<>();
-
-        public void addChildren(long d) {
-            for (long i = d; i > 0; i-=9) {
-                Node t = Node.of((i/7)+1);
-                t.addChildren(i);
-                children.add(t);
-            }
-        }
-
-        public long countOffSpringsOfChildren() {
-            return children.stream().map(Node::countOffSpringsOfChildren).reduce(0L, Long::sum) + v;
-        }
-    }
 }
