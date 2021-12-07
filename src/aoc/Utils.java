@@ -1,12 +1,12 @@
 package aoc;
 
+import aoc2021.Problem07;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Utils {
 
@@ -59,4 +59,31 @@ public class Utils {
         }
         return arr;
     }
+
+    public static Map<Integer, Integer> getMapOfCounts(String[] strs) {
+        return Arrays.stream(strs)
+                .map(Integer::parseInt)
+                .reduce(new HashMap<>(),
+                        (l, i) -> { Integer ignore =
+                                l.containsKey(i)
+                                        ? l.put(i, l.get(i) + 1)
+                                        : l.put(i, 1);
+                            return l;
+                        },
+                        Utils::parallelStreamsNotAllowed
+        );
+    }
+
+    private static HashMap<Integer, Integer> parallelStreamsNotAllowed(HashMap<Integer, Integer> h1, HashMap<Integer, Integer> h2) {
+        throw new RuntimeException("These calculations are not to be done in parallel. If you're using stream.parallel(), remove it!");
+    }
+
+    public static int minFromInts(Collection<Integer> ints) {
+        return ints.stream().min(Comparator.naturalOrder()).orElse(Integer.MAX_VALUE);
+    }
+
+    public static int maxFromInts(Collection<Integer> ints) {
+        return ints.stream().max(Comparator.naturalOrder()).orElse(Integer.MIN_VALUE);
+    }
+
 }

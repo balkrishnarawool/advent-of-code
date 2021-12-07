@@ -3,12 +3,13 @@ package aoc2021;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.IntStream;
 
 import static aoc.Utils.fileToStringArray;
+import static aoc.Utils.getMapOfCounts;
+import static aoc.Utils.minFromInts;
+import static aoc.Utils.maxFromInts;
 
 public class Problem07 {
 
@@ -17,39 +18,27 @@ public class Problem07 {
     private static class Crab { int pos; int count; }
 
     private static int fuelCount(String s, boolean corrected) {
-        String[] sa = s.split(",");
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        Map<Integer, Integer> lookup = new HashMap<>();
-        for (String str: sa) {
-            int i = Integer.parseInt(str);
-            min = Math.min(min, i);
-            max = Math.max(max, i);
-            if (lookup.containsKey(i)) {
-                lookup.put(i, lookup.get(i) + 1);
-            } else {
-                lookup.put(i, 1);
-            }
-        }
-        List<Crab> crabs = new ArrayList<>();
-        for (int i: lookup.keySet()) {
-            crabs.add(Crab.of(i, lookup.get(i)));
-        }
+        Map<Integer, Integer> lookup = getMapOfCounts(s.split(","));
+        int min = minFromInts(lookup.keySet());
+        int max = maxFromInts(lookup.keySet());
 
-        int minFuelCount = Integer.MAX_VALUE;
-        for (int i = min; i <= max; i++) {
-            int fuelCount = 0;
-            for (Crab c: crabs) {
-                if (corrected) {
-                    fuelCount += (sumOfNumbers(Math.abs(c.pos - i)) * c.count);
-                } else {
-                    fuelCount += (Math.abs(c.pos - i) * c.count);
-                }
-            }
-            minFuelCount = Math.min(minFuelCount, fuelCount);
-        }
+        List<Crab> crabs = lookup.keySet().stream()
+                .reduce(new ArrayList<>(),
+                        (l, i) ->  { l.add(Crab.of(i, lookup.get(i))); return l; },
+                        (l1, l2) -> { l1.addAll(l2); return l1; }
+                );
 
-        return minFuelCount;
+        return IntStream.range(min, max + 1)
+                .map(i -> getTotalFuelCount(crabs, i, corrected))
+                .reduce(Math::min)
+                .orElse(0);
+    }
+
+    private static int getTotalFuelCount(List<Crab> crabs, int i, boolean corrected) {
+        return crabs.stream()
+                .map(c -> corrected ? sumOfNumbers(Math.abs(c.pos - i)) * c.count : (Math.abs(c.pos - i) * c.count))
+                .reduce(Integer::sum)
+                .orElse(0);
     }
 
     private static int sumOfNumbers(int n) {
