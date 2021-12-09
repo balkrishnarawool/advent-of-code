@@ -77,13 +77,13 @@ public class Problem09 {
     }
 
     private static void updateBasinIndex(int[][] map, int i, int j) {
-          if (map[i][j] == 0) {
-              int t = getBasinIndex(map, i, j);
-              if (t == 0) {
+//          if (map[i][j] == 0) {
+//              int t = getBasinIndex(map, i, j);
+//              if (t == 0) {
                   index++;
                   updateBasinIndex(map, i, j, index);
-              }
-          }
+//              }
+//          }
 
     }
 
