@@ -40,7 +40,10 @@ public class Problem09 {
 
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == 0) updateBasinIndex(map, i, j);
+                if (map[i][j] == 0)  {
+                    index++;
+                    updateBasinIndex(map, i, j, index);
+                }
             }
         }
 
@@ -74,37 +77,6 @@ public class Problem09 {
             }
         }
         return maxI;
-    }
-
-    private static void updateBasinIndex(int[][] map, int i, int j) {
-//          if (map[i][j] == 0) {
-//              int t = getBasinIndex(map, i, j);
-//              if (t == 0) {
-                  index++;
-                  updateBasinIndex(map, i, j, index);
-//              }
-//          }
-
-    }
-
-    private static int getBasinIndex(int[][] map, int i, int j) {
-        if (map[i][j] == 0) {
-//            Commented because you should only check down and right otherwise you'd end up in infinite recursion
-//            if (i > 0 && map[i - 1][j] != 1) {
-//                return getBasinIndex(map, i - 1, j);
-//            }
-//            if (j > 0 && map[i][j - 1] != 1) {
-//                return getBasinIndex(map, i, j-1);
-//            }
-            if (i < map.length - 1 && map[i + 1][j] != 1) {
-                return getBasinIndex(map, i + 1, j);
-            }
-            if (j < map[i].length - 1 && map[i][j + 1] != 1) {
-                return getBasinIndex(map, i, j + 1);
-            }
-        }
-        if (map[i][j] >= 2 ) return map[i][j];
-        return 0;
     }
 
     private static void updateBasinIndex(int[][] map, int i, int j, int index) {
