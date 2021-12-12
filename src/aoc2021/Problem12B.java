@@ -1,9 +1,9 @@
 package aoc2021;
 
+import aoc.Graph;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static aoc.Utils.fileToStringArray;
 
@@ -13,12 +13,11 @@ public class Problem12B {
 
     private static int countPaths(String[] input) {
         count = 0;
-        Map<String, List<String>> graph = new HashMap<>();
-        for (String str: input) {
-            String[] strs = str.split("-");
-            addToGraph(graph, strs[0], strs[1]);
-            addToGraph(graph, strs[1], strs[0]);
+        String[][] strs = new String[input.length][2];
+        for (int i = 0; i < input.length; i++) {
+            strs[i] = input[i].split("-");
         }
+        Graph<String> graph = Graph.convertFromEdgePairs(strs);
 
         List<String> path = new ArrayList<>();
         path.add("start");
@@ -27,8 +26,8 @@ public class Problem12B {
         return count;
     }
 
-    private static void findPath(Map<String, List<String>> graph, List<String> path, String node) {
-        for (String to: graph.get(node)) {
+    private static void findPath(Graph<String> graph, List<String> path, String node) {
+        for (String to: graph.getEdgeVerticesFor(node)) {
             if (to.equals("end")) { count++; }
             else if (canVisit(path, to)) {
                 findPath(graph, copyAndAdd(path, to), to);
@@ -51,7 +50,7 @@ public class Problem12B {
         if (c >= 2) return false;
         if (c == 1) {
             for (String n1 : path) {
-                if (!n1.equals("start") && isLower(n1)) { // !n1.equals("start") can be removed because start can only appear once in a given path
+                if (isLower(n1)) { // This was !n1.equals("start") && isLower(n1). But !n1.equals("start") is removed because start can only appear once in a given path
                     int c2 = countNode(path, n1);
 
                     if (c2 > 1) return false;
@@ -71,22 +70,6 @@ public class Problem12B {
 
     private static boolean isLower(String to) {
         return to.equals(to.toLowerCase());
-    }
-
-    private static boolean alreadyVisited(List<String> path, String to) {
-        for (String n: path) {
-            if (n.equals(to)) return true;
-        }
-        return false;
-    }
-
-    private static void addToGraph(Map<String, List<String>> graph, String a, String b) {
-        if (!graph.containsKey(a)) {
-            graph.put(a, new ArrayList<>());
-            graph.get(a).add(b);
-        } else {
-            graph.get(a).add(b);
-        }
     }
 
     public static void main(String[] args) {
