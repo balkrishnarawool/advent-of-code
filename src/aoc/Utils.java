@@ -51,12 +51,6 @@ public class Utils {
         return copy;
     }
 
-    public static List<String> copyAndAdd(List<String> path, String to) {
-        List<String> newList = new ArrayList<>(path);
-        newList.add(to);
-        return newList;
-    }
-
     public static String[] split(String str, String... d) {
         String[] arr = new String[d.length + 1];
         for (int i = 0; i < d.length; i++) {

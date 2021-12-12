@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static aoc.Utils.fileToStringArray;
 
-public class Problem12A {
+public class Problem12B {
 
     private static int count = 0;
 
@@ -43,7 +43,7 @@ public class Problem12A {
     }
 
     private static boolean canVisit(List<String> path, String to) {
-        return !isLower(to) || (isLower(to) && !alreadyVisited(path, to));
+        return !isLower(to) || (!to.equals("start") && onlyOneLowerTwice(path, to));
     }
 
     private static boolean onlyOneLowerTwice(List<String> path, String to) {
@@ -90,10 +90,10 @@ public class Problem12A {
     }
 
     public static void main(String[] args) {
-        String[] input1 = fileToStringArray(Problem12A.class, "Problem12Input1.txt");
-        String[] input2 = fileToStringArray(Problem12A.class, "Problem12Input2.txt");
-        String[] input3 = fileToStringArray(Problem12A.class, "Problem12Input3.txt");
-        String[] input4 = fileToStringArray(Problem12A.class, "Problem12Input4.txt");
+        String[] input1 = fileToStringArray(Problem12B.class, "Problem12Input1.txt");
+        String[] input2 = fileToStringArray(Problem12B.class, "Problem12Input2.txt");
+        String[] input3 = fileToStringArray(Problem12B.class, "Problem12Input3.txt");
+        String[] input4 = fileToStringArray(Problem12B.class, "Problem12Input4.txt");
 
         System.out.println(countPaths(input1));
         System.out.println(countPaths(input2));
