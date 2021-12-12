@@ -24,11 +24,12 @@ public class Tree<T> {
 
     // Finds first node with value i
     public Tree<T> findNode(T i) {
-        Tree<T> tree = null;
+        if (value.equals(i)) { return this; }
         for (Tree<T> t: childNodes) {
-            tree = (tree == null) ? (t.value.equals(i) ? t : t.findNode(i)) : tree;
+            Tree<T> tree = t.findNode(i);
+            if (tree != null) { return tree; }
         }
-        return tree;
+        return null;
     }
 
     public <U> U reduce(U identity, BiFunction<U, T, U> func) {
