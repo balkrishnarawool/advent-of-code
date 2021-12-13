@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import static aoc.Utils.fileToStringArray;
 
-public class Problem13A {
+public class Problem13 {
 
     @Value
     @AllArgsConstructor(staticName = "of")
@@ -112,8 +112,8 @@ public class Problem13A {
     }
 
     public static void main(String[] args) {
-        String[] input1 = fileToStringArray(Problem13A.class, "Problem13Input1.txt");
-        String[] input2 = fileToStringArray(Problem13A.class, "Problem13Input2.txt");
+        String[] input1 = fileToStringArray(Problem13.class, "Problem13Input1.txt");
+        String[] input2 = fileToStringArray(Problem13.class, "Problem13Input2.txt");
 
         System.out.println(countDots(input1, 2));
         System.out.println(countDots(input2, 12));
