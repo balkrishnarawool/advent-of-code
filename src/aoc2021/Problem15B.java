@@ -9,8 +9,9 @@ import static aoc.Utils.fileToStringArray;
 
 public class Problem15B {
 
-    private static int solve(String[] input1, int size) {
+    private static int solve(String[] input1) {
         int[][] risks = new int[input1.length * 5][input1[0].length() * 5];
+        int size = input1.length;
         for (int k = 0; k < 5; k++) {
             for (int l = 0; l < 5; l++) {
                 for (int i = 0; i < input1.length; i++) {
@@ -56,9 +57,9 @@ public class Problem15B {
         String[] input1 = fileToStringArray(Problem15B.class, "Problem15Input1.txt");
         String[] input2 = fileToStringArray(Problem15B.class, "Problem15Input2.txt");
 
-        System.out.println(solve(input3, 3));
-        System.out.println(solve(input1, 10));
-        System.out.println(solve(input2, 100));
+        System.out.println(solve(input3));
+        System.out.println(solve(input1));
+        System.out.println(solve(input2));
     }
 
     private static class PrioQueue {
