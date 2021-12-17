@@ -1,10 +1,5 @@
 package aoc2021;
 
-import aoc.Tuple2;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import static aoc.Utils.fileToStringArray;
 
 public class Problem17 {
