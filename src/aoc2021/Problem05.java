@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static aoc.Utils.fileToStringArray;
-import static aoc.Utils.split;
 
 public class Problem05 {
 
@@ -15,9 +14,11 @@ public class Problem05 {
     private static long countOverlapPoints(String[] strs, boolean diagonals) {
         int[][] arr = new int[1_000][1_000];
         for (String str: strs) {
-            String[] sa = split(str, ","," -> ", ",");
-            Point p1 = Point.of(Integer.parseInt(sa[0]), Integer.parseInt(sa[1]));
-            Point p2 = Point.of(Integer.parseInt(sa[2]), Integer.parseInt(sa[3]));
+            String[] sa = str.split(" -> ");
+            String[] sa2 = sa[0].split(",");
+            String[] sa3 = sa[1].split(",");
+            Point p1 = Point.of(Integer.parseInt(sa2[0]), Integer.parseInt(sa2[1]));
+            Point p2 = Point.of(Integer.parseInt(sa3[0]), Integer.parseInt(sa3[1]));
             if (p1.x == p2.x) {
                 for (int j = Math.min(p1.y, p2.y); j <= Math.max(p1.y, p2.y); j++) {
                     arr[p1.x][j]++;
