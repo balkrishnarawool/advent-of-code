@@ -51,6 +51,15 @@ public class Utils {
         return copy;
     }
 
+    public static String[] split(String str, String... d) {
+        String[] arr = new String[d.length + 1];
+        for (int i = 0; i < d.length; i++) {
+            arr[i] = str.split(d[i])[0];
+            str = str.split(d[i])[1];
+        }
+        return arr;
+    }
+
     public static Map<Integer, Integer> getMapOfCounts(String[] strs) {
         return Arrays.stream(strs)
                 .map(Integer::parseInt)
