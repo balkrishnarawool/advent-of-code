@@ -30,7 +30,7 @@ public class Problem25 {
                         arrCopy[i][nextJ] = arrCopy[i][j];
                         arrCopy[i][j] = ".";
                         moves++;
-                        print(arrCopy);
+                        //print(arrCopy);
                         System.out.println();
                     }
                 }
@@ -44,7 +44,7 @@ public class Problem25 {
                         arrCopy[nextI][j] = arrCopy[i][j];
                         arrCopy[i][j] = ".";
                         moves++;
-                        print(arrCopy);
+                        //print(arrCopy);
                         System.out.println();
                     }
                 }
