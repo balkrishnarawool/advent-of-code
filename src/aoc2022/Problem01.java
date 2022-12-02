@@ -14,6 +14,9 @@ import java.util.List;
 public class Problem01 {
 
     public static void main(String[] args) throws IOException {
+
+        System.out.println(Math.abs(Integer.MIN_VALUE));
+
         solvePart1("./src/aoc2022/Problem01Input1.txt");
         solvePart1("./src/aoc2022/Problem01Input2.txt");
         solvePart2("./src/aoc2022/Problem01Input1.txt");
@@ -54,7 +57,7 @@ public class Problem01 {
     static class MutableInt {
         int v;
     }
-    
+
 //     Output
 //    Optional[24000]
 //    Optional[67027]
