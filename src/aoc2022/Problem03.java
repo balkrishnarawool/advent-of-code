@@ -7,9 +7,7 @@ import lombok.Setter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Problem03 {
 
@@ -29,75 +27,60 @@ public class Problem03 {
     }
 
     private static int solve(String path) throws IOException {
-        try(var lines = Files.lines(Path.of(path))) {
-            return lines.map(s -> {
-                var a1 = s.substring(0, s.length()/2).split("");
-                var a2 = s.substring(s.length()/2).split("");
-
-                var r = getCommon(a1, a2);
-                var rr = (r.charAt(0) - 'A') + 1;
-                var rrr = rr > 26 ? rr - 32 : rr + 26;
-
-                return rrr;
-            })
-            .reduce(Integer::sum)
-            .orElse(0);
+        try (var lines = Files.lines(Path.of(path))) {
+            return lines.map(s ->
+                            getScore(getCommon(
+                                    s.substring(0, s.length() / 2).split(""),
+                                    s.substring(s.length() / 2).split(""))))
+                    .reduce(Integer::sum)
+                    .orElse(0);
         }
+    }
+
+    private static int getScore(String r) {
+        var rr = (r.charAt(0) - 'A') + 1;
+        return rr > 26 ? rr - 32 : rr + 26;
     }
 
     private static int solve2(String path) throws IOException {
-        var rrrr = 0;
-        try(var lines = Files.lines(Path.of(path))) {
+        var r = 0;
+        try (var lines = Files.lines(Path.of(path))) {
             var l = lines.toList();
-            for (int i = 0; i < l.size()/3; i++) {
-                var r = getCommon2(l.get(i*3).split(""), l.get(i*3 + 1).split(""), l.get(i*3 + 2).split(""));
-                var rr = (r.charAt(0) - 'A') + 1;
-                var rrr = rr > 26 ? rr - 32 : rr + 26;
-                rrrr += rrr;
+            for (int i = 0; i < l.size() / 3; i++) {
+                r += getScore(getCommon(
+                        l.get(i * 3).split(""),
+                        l.get(i * 3 + 1).split(""),
+                        l.get(i * 3 + 2).split("")));
             }
         }
-        return rrrr;
+        return r;
     }
 
-    private static String getCommon2(String[] a1, String[] a2, String[] a3) {
-        var r = new MutableString("");
-        Arrays.stream(a1)
-                .forEach(s1 -> {
-                    Arrays.stream(a2)
-                            .forEach(s2 -> {
-                                Arrays.stream(a3)
-                                        .forEach(s3 -> {
-                                            if (s1.equals(s2) && s2.equals(s3)) {
-                                                r.setV(s1);
-                                            }
-                                        });
-                            });
-                });
-        return r.getV();
+    private static String getCommon(String[] a1, String[] a2, String[] a3) {
+        for (var s1: a1) {
+            for (var s2: a2) {
+                for (var s3: a3) {
+                    if (s1.equals(s2) && s2.equals(s3)) return s1;
+                }
+            }
+        }
+        throw new RuntimeException("Nothing common in "+Arrays.toString(a1)+" , "+ Arrays.toString(a2)+" and "+Arrays.toString(a3));
     }
 
     private static String getCommon(String[] a1, String[] a2) {
-        var r = new MutableString("");
-        Arrays.stream(a1)
-                .forEach(s1 -> {
-                    Arrays.stream(a2)
-                            .forEach(s2 -> {
-                                if (s1.equals(s2)) {
-                                    r.setV(s1);
-                                }
-                            });
-                });
-        return r.getV();
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor(staticName = "of")
-    static class MutableString {
-        String v;
+        for (var s1: a1) {
+            for (var s2: a2) {
+                if (s1.equals(s2)) return s1;
+            }
+        }
+        throw new RuntimeException("Nothing common in "+Arrays.toString(a1)+" and "+ Arrays.toString(a2));
     }
 
 //     Output
+//     157
+//     8233
+//     70
+//     2821
 
 
 }
