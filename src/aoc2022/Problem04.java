@@ -54,10 +54,15 @@ public class Problem04 {
                         var x2 = Integer.parseInt(sa2[0]);
                         var y2 = Integer.parseInt(sa2[1]);
 
-                        if((x1<x2 && y1>=x2) ||
-                           (x1==x2) ||
-                           (x1>x2 && x1<=y2)) return true;
-                        else return false;
+//                        Use either this:
+//                        if((x1<x2 && y1>=x2) ||
+//                           (x1==x2) ||
+//                           (x1>x2 && x1<=y2)) return true;
+//                        else return false;
+//                        Or this:
+                        if((x1<x2 && y1<x2) ||
+                           (x1>y2 && y1>y2)) return false;
+                        else return true;
                     })
                     .filter(b -> b)
                     .count();
@@ -66,7 +71,9 @@ public class Problem04 {
 
 
 //     Output
-
-
+//     2
+//     588
+//     4
+//     911
 
 }
