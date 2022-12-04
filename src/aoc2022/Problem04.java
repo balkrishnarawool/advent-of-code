@@ -45,27 +45,28 @@ public class Problem04 {
     private static long solve2(String path) throws IOException {
         try (var lines = Files.lines(Path.of(path))) {
             return lines.map(s -> {
-                        var sa = s.split(",");
-                        var sa1 = sa[0].split("-");
-                        var sa2 = sa[1].split("-");
 
-                        var x1 = Integer.parseInt(sa1[0]);
-                        var y1 = Integer.parseInt(sa1[1]);
-                        var x2 = Integer.parseInt(sa2[0]);
-                        var y2 = Integer.parseInt(sa2[1]);
+                var sa = s.split(",");
+                var sa1 = sa[0].split("-");
+                var sa2 = sa[1].split("-");
 
-//                        Use either this:
-//                        if((x1<x2 && y1>=x2) ||
-//                           (x1==x2) ||
-//                           (x1>x2 && x1<=y2)) return true;
-//                        else return false;
-//                        Or this:
-                        if((x1<x2 && y1<x2) ||
-                           (x1>y2 && y1>y2)) return false;
-                        else return true;
-                    })
-                    .filter(b -> b)
-                    .count();
+                var x1 = Integer.parseInt(sa1[0]);
+                var y1 = Integer.parseInt(sa1[1]);
+                var x2 = Integer.parseInt(sa2[0]);
+                var y2 = Integer.parseInt(sa2[1]);
+
+//                Use either this:
+//                if((x1<x2 && y1>=x2) ||
+//                   (x1==x2) ||
+//                   (x1>x2 && x1<=y2)) return true;
+//                else return false;
+//                Or this:
+                if((x1<x2 && y1<x2) ||
+                   (x1>y2 && y1>y2)) return false;
+                else return true;
+            })
+            .filter(b -> b)
+            .count();
         }
     }
 
