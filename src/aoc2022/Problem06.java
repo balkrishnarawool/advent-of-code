@@ -3,10 +3,10 @@ package aoc2022;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 public class Problem06 {
 
@@ -19,12 +19,7 @@ public class Problem06 {
 
     private static void solve(int c, String s) {
         for (int i = 0; i < s.length()-c+1; i++) {
-            var st = s.substring(i, i+c);
-            var m = new HashMap<String, Integer>();
-            for (var stt: st.split("")) {
-                m.put(stt, 1);
-            }
-            if (m.size() == c) {
+            if (Arrays.stream(s.substring(i, i+c).split("")).collect(toSet()).size() == c ) {
                 System.out.println(i+c);
                 return;
             }
