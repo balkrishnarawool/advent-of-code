@@ -12,7 +12,6 @@ public class Problem05 {
 
     public static void main(String[] args) throws IOException {
         solvePart1("./src/aoc2022/Problem05Input1.txt");
-
         solvePart1("./src/aoc2022/Problem05Input2.txt");
         solvePart2("./src/aoc2022/Problem05Input1.txt");
         solvePart2("./src/aoc2022/Problem05Input2.txt");
@@ -104,18 +103,11 @@ public class Problem05 {
         }
     }
 
-//    private static long solve2(String path) throws IOException {
-//        try (var lines = Files.lines(Path.of(path))) {
-//            return lines.map(s -> {
-//
-//            })
-//            .filter(b -> b)
-//            .count();
-//        }
-//    }
-
 
 //     Output
-
+//     CMZ
+//     QPJPLMNNR
+//     MCD
+//     BQDNWJPVJ
 
 }
