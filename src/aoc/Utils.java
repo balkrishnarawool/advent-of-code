@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class Utils {
@@ -75,6 +77,12 @@ public class Utils {
 
     public static int maxFromInts(Collection<Integer> ints) {
         return ints.stream().max(Comparator.naturalOrder()).orElse(Integer.MIN_VALUE);
+    }
+
+    public static List<String> readFile(String path) throws IOException {
+        try (var lines = Files.lines(Path.of(path))) {
+            return lines.toList();
+        }
     }
 
 }
