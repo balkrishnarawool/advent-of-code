@@ -10,9 +10,9 @@ import static aoc.Utils.readFile;
 public class Problem07 {
 
     public static void main(String[] args) throws IOException {
-//        solvePart1("./src/aoc2022/Problem07Input1.txt");
-//        solvePart1("./src/aoc2022/Problem07Input2.txt");
-//        solvePart2("./src/aoc2022/Problem07Input1.txt");
+        solvePart1("./src/aoc2022/Problem07Input1.txt");
+        solvePart1("./src/aoc2022/Problem07Input2.txt");
+        solvePart2("./src/aoc2022/Problem07Input1.txt");
         solvePart2("./src/aoc2022/Problem07Input2.txt");
     }
 
@@ -130,6 +130,9 @@ public class Problem07 {
 
     }
 //     Output
-
+//     95437
+//     1447046
+//     24933642
+//     578710
 
 }
