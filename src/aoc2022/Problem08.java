@@ -128,9 +128,10 @@ public class Problem08 {
 
     }
 
-
-
 //     Output
-
+//     21
+//     1827
+//     8
+//     335580
 
 }
