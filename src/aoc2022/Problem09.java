@@ -56,7 +56,7 @@ public class Problem09 {
                         h = new Coords(h.x-1, h.y);
                         set.add(t);
                     }
-                break;
+                    break;
                 case "U":
                     for (int i = 0; i < n; i++) {
                         if (t.x == h.x-1 && t.y == h.y+1) { t = new Coords(t.x+1, t.y-1); }
@@ -66,7 +66,7 @@ public class Problem09 {
                         h = new Coords(h.x, h.y-1);
                         set.add(t);
                     }
-                break;
+                    break;
                 case "D":
                     for (int i = 0; i < n; i++) {
                         if (t.x == h.x-1 && t.y == h.y-1) { t = new Coords(t.x+1, t.y+1); }
@@ -227,7 +227,7 @@ public class Problem09 {
         }
         return temp;
     }
-    
+
     record Coords(int x, int y) { }
 
 //     Output
