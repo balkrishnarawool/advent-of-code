@@ -1,19 +1,29 @@
 package aoc2022;
 
 import java.io.IOException;
-import java.util.*;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static aoc.Utils.readFile;
 
-public class Problem11A {
+// Solves both parts
+public class Problem11C {
 
     public static void main(String[] args) throws IOException {
         solvePart1("./src/aoc2022/Problem11Input1.txt");
         solvePart1("./src/aoc2022/Problem11Input2.txt");
+        solvePart2("./src/aoc2022/Problem11Input1.txt");
+        solvePart2("./src/aoc2022/Problem11Input2.txt");
     }
 
     private static void solvePart1(String path) throws IOException {
         System.out.println(solve(path));
+    }
+
+    private static void solvePart2(String path) throws IOException {
+        System.out.println(solve2(path));
     }
 
     private static long solve(String path) throws IOException {
@@ -30,6 +40,28 @@ public class Problem11A {
 
         }
         return ms.stream().map(m -> m.c).sorted(Comparator.reverseOrder()).limit(2).reduce((a, b) -> a * b).orElse(0);
+    }
+
+    private static BigInteger solve2(String path) throws IOException {
+        var ms = parseInput(path); // ms = monkeys
+        var limit = getLimit(ms);
+        for (int i = 0; i < 10_000; i++) {
+            for (var m: ms) {
+                for (var n: m.list) {
+                    m.c ++;
+                    long r = m.e.eval(n, limit);
+                    if (r % m.divTest == 0) ms.get(m.t).list.add(r); else ms.get(m.f).list.add(r);
+                }
+                m.list = new ArrayList<>();
+            }
+
+        }
+        var l = ms.stream().map(m -> m.c).sorted(Comparator.reverseOrder()).limit(2).toList();
+        return BigInteger.valueOf(l.get(0)).multiply(BigInteger.valueOf(l.get(1)));
+    }
+
+    private static long getLimit(List<Monkey> ms) {
+        return ms.stream().map(m -> m.divTest).reduce(1L, (a, b) -> a * b);
     }
 
     private static List<Monkey> parseInput(String path) throws IOException {
@@ -83,6 +115,13 @@ public class Problem11A {
                 case MULT -> (v instanceof Int i) ? n * i.l : n * n;
             };
         }
+
+        public long eval(Long n, Long limit) {
+            return switch (t) {
+                case ADD -> (v instanceof Int i) ? (n + i.l) % limit : (n + n) % limit;
+                case MULT -> (v instanceof Int i) ? (n * i.l) % limit : (n * n) % limit;
+            };
+        }
     }
 
     enum Type {
@@ -96,5 +135,7 @@ public class Problem11A {
 //     Output
 //     10605
 //     61005
+//     2713310158
+//     20567144694
 
 }

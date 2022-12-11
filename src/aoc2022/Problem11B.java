@@ -137,6 +137,7 @@ public class Problem11B {
     record Int(long l) implements Value { }
 
 //     Output
-
+//     2713310158
+//     20567144694
 
 }
