@@ -1,14 +1,11 @@
 package aoc2022;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 import static aoc.Utils.readFile;
 
-public class Problem11 {
+public class Problem11A {
 
     public static void main(String[] args) throws IOException {
         solvePart1("./src/aoc2022/Problem11Input1.txt");
