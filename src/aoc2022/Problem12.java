@@ -131,15 +131,22 @@ public class Problem12 {
     static class PrioQueue extends PriorityQueue<Entry> {
         @Override
         public boolean add(Entry newE) {
+            var found = false;
+            var removed = false;
             for (var e: this) {
                 if (e.c.r == newE.c.r && e.c.c == newE.c.c) {
+                    found = true;
                     if (e.d >= newE.d) {
                         remove(e);
+                        removed = true;
                         break; // Max one 'bigger' entry possible. If found, remove and break loop.
                     }
                 }
             }
-            return super.add(newE);
+            if (!found || removed) {
+                return super.add(newE); // Add only if not-found or removed
+            }
+            return false;
         }
     }
 
