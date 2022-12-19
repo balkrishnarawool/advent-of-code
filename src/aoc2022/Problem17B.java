@@ -28,7 +28,7 @@ public class Problem17B {
         var map = new Map();
 
         long l = 0L;
-        var match = false;
+        var matchFound = false;
         for (long i = 0; i < 1_000_000_000_000L; i++) {
             var r = map.addRock((int) Math.floorMod(i, 5L));
             var tw = g.getNextToken();
@@ -36,8 +36,8 @@ public class Problem17B {
             while (!r.hasStopped(map)) {
                 map.moveRock(map, r, "|");
                 tw = g.getNextToken(map, r, l, i);
-                if (!match && tw.remainder != -1) {
-                    match = true;
+                if (!matchFound && tw.matched) {
+                    matchFound = true;
                     l = tw.l; i = tw.i;
                 }
                 map.moveRock(map, r, tw.t);
@@ -68,27 +68,27 @@ public class Problem17B {
         List<Long> is = new ArrayList<>(); // i-s
 
         public TokenWrapper getNextToken() {
-            var remainder = -1L;
+            var matched = false;
             var newL = -1L;
             var newI = -1L;
             if (index == s.length()-1) {
                 index = 0;
             }
             else index++;
-            return new TokenWrapper(""+s.charAt(index), newL, newI, remainder);
+            return new TokenWrapper(""+s.charAt(index), newL, newI, matched);
         }
 
         public TokenWrapper getNextToken(Map map, Rock r, long l, long i) {
-            var remainder = -1L;
+            var matched = false;
             var newL = -1L;
             var newI = -1L;
             if (index == s.length()-1) {
                 index = 0;
                 if (contains(maps, map, rocks, r)) {
+                    matched = true;
                     var i2 = getIndex(maps, map, rocks, r);
 
                     var quotient = Math.floorDiv(1_000_000_000_000L - is.get(i2), (i - is.get(i2)));
-                    remainder = Math.floorMod(1_000_000_000_000L - is.get(i2), (i - is.get(i2)));
                     var deltaI = (i - is.get(i2)) * quotient;
                     newI = is.get(i2) + deltaI;
                     var deltaL = (l - ls.get(i2)) * quotient;
@@ -101,7 +101,7 @@ public class Problem17B {
                 }
             }
             else index++;
-            return new TokenWrapper(""+s.charAt(index), newL, newI, remainder);
+            return new TokenWrapper(""+s.charAt(index), newL, newI, matched);
         }
 
         private int getIndex(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
@@ -155,7 +155,7 @@ public class Problem17B {
         }
     }
 
-    record TokenWrapper(String t, long l, long i, long remainder) { }
+    record TokenWrapper(String t, long l, long i, boolean matched) { }
 
     static class Map {
         List<String[]> map = new ArrayList<>();
