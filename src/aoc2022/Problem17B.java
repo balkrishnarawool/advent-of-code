@@ -23,6 +23,7 @@ public class Problem17B {
     }
 
     private static long solve(String path) throws IOException {
+        var mapStore = new MapStore();
         var lines = readFile(path);
         var g = new Generator(lines.get(0));
         var map = new Map();
@@ -35,10 +36,14 @@ public class Problem17B {
             map.moveRock(map, r, tw.t);
             while (!r.hasStopped(map)) {
                 map.moveRock(map, r, "|");
-                tw = g.getNextToken(map, r, l, i);
-                if (!matchFound && tw.matched) {
-                    matchFound = true;
-                    l = tw.l; i = tw.i;
+                tw = g.getNextToken();
+                if (!matchFound && tw.looped) {
+                    var match = mapStore.checkForMatch(map, r, l, i);
+                    if (match.matched) {
+                        matchFound = true;
+                        l = match.l;
+                        i = match.i;
+                    }
                 }
                 map.moveRock(map, r, tw.t);
             }
@@ -62,100 +67,19 @@ public class Problem17B {
         @NonNull
         String s;
         int index = -1;
-        List<Map> maps = new ArrayList<>();
-        List<Rock> rocks = new ArrayList<>();
-        List<Long> ls = new ArrayList<>(); // l-s
-        List<Long> is = new ArrayList<>(); // i-s
 
         public TokenWrapper getNextToken() {
-            var matched = false;
-            var newL = -1L;
-            var newI = -1L;
+            var looped = false;
             if (index == s.length()-1) {
                 index = 0;
+                looped = true;
             }
             else index++;
-            return new TokenWrapper(""+s.charAt(index), newL, newI, matched);
-        }
-
-        public TokenWrapper getNextToken(Map map, Rock r, long l, long i) {
-            var matched = false;
-            var newL = -1L;
-            var newI = -1L;
-            if (index == s.length()-1) {
-                index = 0;
-                if (contains(maps, map, rocks, r)) {
-                    matched = true;
-                    var i2 = getIndex(maps, map, rocks, r);
-
-                    var quotient = Math.floorDiv(1_000_000_000_000L - is.get(i2), (i - is.get(i2)));
-                    var deltaI = (i - is.get(i2)) * quotient;
-                    newI = is.get(i2) + deltaI;
-                    var deltaL = (l - ls.get(i2)) * quotient;
-                    newL = ls.get(i2) + deltaL;
-                } else {
-                    maps.add(copy(map));
-                    rocks.add(copy(r));
-                    ls.add(l);
-                    is.add(i);
-                }
-            }
-            else index++;
-            return new TokenWrapper(""+s.charAt(index), newL, newI, matched);
-        }
-
-        private int getIndex(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
-            for (int i = 0; i < maps.size(); i++) {
-                var r = rocks.get(i);
-                var m = maps.get(i);
-                if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return i;
-            }
-            throw new RuntimeException("Cannot find index for match");
-        }
-
-        private boolean contains(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
-            for (int i = 0; i < maps.size(); i++) {
-                var r = rocks.get(i);
-                var m = maps.get(i);
-                if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return true;
-            }
-            return false;
-        }
-
-        private boolean sameAs(Map m1, Map m2) {
-            if (m1.map.size() == m2.map.size()) {
-                for (int i = 0; i < m1.map.size(); i++) {
-                    for (int j = 0; j < m1.map.get(i).length; j++) {
-                        if (!m1.map.get(i)[j].equals(m2.map.get(i)[j])) return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        private Map copy(Map map) {
-            var copy = new ArrayList<String[]>();
-            for (var row: map.map) {
-                copy.add(copy(row));
-            }
-            var copyMap = new Map();
-            copyMap.map = copy;
-            return copyMap;
-        }
-
-        private String[] copy(String[] row) {
-            var copy = new String[row.length];
-            System.arraycopy(row, 0, copy, 0, row.length);
-            return copy;
-        }
-
-        private Rock copy(Rock r) {
-            return new Rock(r.t, r.p);
+            return new TokenWrapper(""+s.charAt(index), looped);
         }
     }
 
-    record TokenWrapper(String t, long l, long i, boolean matched) { }
+    record TokenWrapper(String t, boolean looped) { }
 
     static class Map {
         List<String[]> map = new ArrayList<>();
@@ -216,7 +140,90 @@ public class Problem17B {
             }
             return min;
         }
+
     }
+
+    static class MapStore {
+        List<Map> maps = new ArrayList<>();
+        List<Rock> rocks = new ArrayList<>();
+        List<Long> ls = new ArrayList<>(); // l-s
+        List<Long> is = new ArrayList<>(); // i-s
+
+        public Match checkForMatch(Map map, Rock r, long l, long i) {
+            var matched = false;
+            var newL = -1L;
+            var newI = -1L;
+
+            if (contains(maps, map, rocks, r)) {
+                matched = true;
+                var i2 = getIndex(maps, map, rocks, r);
+
+                var quotient = Math.floorDiv(1_000_000_000_000L - is.get(i2), (i - is.get(i2)));
+                var deltaI = (i - is.get(i2)) * quotient;
+                newI = is.get(i2) + deltaI;
+                var deltaL = (l - ls.get(i2)) * quotient;
+                newL = ls.get(i2) + deltaL;
+            } else {
+                maps.add(copy(map));
+                rocks.add(copy(r));
+                ls.add(l);
+                is.add(i);
+            }
+            return new Match(newL, newI, matched);
+        }
+
+        private int getIndex(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
+            for (int i = 0; i < maps.size(); i++) {
+                var r = rocks.get(i);
+                var m = maps.get(i);
+                if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return i;
+            }
+            throw new RuntimeException("Cannot find index for match");
+        }
+
+        private boolean contains(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
+            for (int i = 0; i < maps.size(); i++) {
+                var r = rocks.get(i);
+                var m = maps.get(i);
+                if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return true;
+            }
+            return false;
+        }
+
+        private boolean sameAs(Map m1, Map m2) {
+            if (m1.map.size() == m2.map.size()) {
+                for (int i = 0; i < m1.map.size(); i++) {
+                    for (int j = 0; j < m1.map.get(i).length; j++) {
+                        if (!m1.map.get(i)[j].equals(m2.map.get(i)[j])) return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private Map copy(Map map) {
+            var copy = new ArrayList<String[]>();
+            for (var row: map.map) {
+                copy.add(copy(row));
+            }
+            var copyMap = new Map();
+            copyMap.map = copy;
+            return copyMap;
+        }
+
+        private String[] copy(String[] row) {
+            var copy = new String[row.length];
+            System.arraycopy(row, 0, copy, 0, row.length);
+            return copy;
+        }
+
+        private Rock copy(Rock r) {
+            return new Rock(r.t, r.p);
+        }
+    }
+
+    record Match(long l, long i, boolean matched) { }
 
     @AllArgsConstructor
     static class Rock {
