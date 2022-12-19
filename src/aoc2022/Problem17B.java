@@ -13,6 +13,8 @@ import static aoc.Utils.readFile;
 
 public class Problem17B {
 
+    static long ONE_TRILLION = 1_000_000_000_000L;
+
     public static void main(String[] args) throws IOException {
         solvePart2("./src/aoc2022/Problem17Input1.txt");
         solvePart2("./src/aoc2022/Problem17Input2.txt");
@@ -28,28 +30,32 @@ public class Problem17B {
         var g = new Generator(lines.get(0));
         var map = new Map();
 
-        long l = 0L;
+        long scroll = 0L; // number of lines scrolled
         var matchFound = false;
-        for (long i = 0; i < 1_000_000_000_000L; i++) {
+        for (long i = 0; i < ONE_TRILLION ; i++) {
             var r = map.addRock((int) Math.floorMod(i, 5L));
             var tw = g.getNextToken();
             map.moveRock(map, r, tw.t);
+
             while (!r.hasStopped(map)) {
                 map.moveRock(map, r, "|");
                 tw = g.getNextToken();
+
                 if (!matchFound && tw.looped) {
-                    var match = mapStore.checkForMatch(map, r, l, i);
-                    if (match.matched) {
+                    if (mapStore.match(map, r)) {
                         matchFound = true;
-                        l = match.l;
-                        i = match.i;
+                        var si = mapStore.calculateScrollAndIndex(map, r, scroll, i);
+                        scroll = si.scroll;
+                        i = si.index;
+                    } else {
+                        mapStore.saveEntry(map, r, scroll, i);
                     }
                 }
                 map.moveRock(map, r, tw.t);
             }
-            l += map.settle(r);
+            scroll += map.settle(r);
         }
-        return l + map.getHeight();
+        return scroll + map.getHeight();
     }
 
     private static void show(Map map) {
@@ -144,50 +150,37 @@ public class Problem17B {
     }
 
     static class MapStore {
-        List<Map> maps = new ArrayList<>();
-        List<Rock> rocks = new ArrayList<>();
-        List<Long> ls = new ArrayList<>(); // l-s
-        List<Long> is = new ArrayList<>(); // i-s
+        List<Entry> entries = new ArrayList<>();
 
-        public Match checkForMatch(Map map, Rock r, long l, long i) {
-            var matched = false;
-            var newL = -1L;
-            var newI = -1L;
-
-            if (contains(maps, map, rocks, r)) {
-                matched = true;
-                var i2 = getIndex(maps, map, rocks, r);
-
-                var quotient = Math.floorDiv(1_000_000_000_000L - is.get(i2), (i - is.get(i2)));
-                var deltaI = (i - is.get(i2)) * quotient;
-                newI = is.get(i2) + deltaI;
-                var deltaL = (l - ls.get(i2)) * quotient;
-                newL = ls.get(i2) + deltaL;
-            } else {
-                maps.add(copy(map));
-                rocks.add(copy(r));
-                ls.add(l);
-                is.add(i);
-            }
-            return new Match(newL, newI, matched);
+        public boolean match(Map map, Rock r) {
+            return getIndex(map, r) >= 0;
         }
 
-        private int getIndex(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
-            for (int i = 0; i < maps.size(); i++) {
-                var r = rocks.get(i);
-                var m = maps.get(i);
+        public void saveEntry(Map map, Rock r, long l, long i) {
+            entries.add(new Entry(copy(map), copy(r), l, i));
+        }
+
+        public ScrollAndIndex calculateScrollAndIndex(Map map, Rock r, long l, long i) {
+            var i2 = getIndex(map, r);
+            if (i2 >= 0) {
+                var quotient = Math.floorDiv(ONE_TRILLION - entries.get(i2).index, (i - entries.get(i2).index));
+                var deltaI = (i - entries.get(i2).index) * quotient;
+                var newI = entries.get(i2).index + deltaI;
+                var deltaS = (l - entries.get(i2).scroll) * quotient;
+                var newS = entries.get(i2).scroll + deltaS;
+                return new ScrollAndIndex(newS, newI);
+            } else {
+                throw new RuntimeException("");
+            }
+        }
+
+        private int getIndex(Map map, Rock rock) {
+            for (int i = 0; i < entries.size(); i++) {
+                var r = entries.get(i).rock;
+                var m = entries.get(i).map;
                 if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return i;
             }
-            throw new RuntimeException("Cannot find index for match");
-        }
-
-        private boolean contains(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
-            for (int i = 0; i < maps.size(); i++) {
-                var r = rocks.get(i);
-                var m = maps.get(i);
-                if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return true;
-            }
-            return false;
+            return -1;
         }
 
         private boolean sameAs(Map m1, Map m2) {
@@ -223,7 +216,8 @@ public class Problem17B {
         }
     }
 
-    record Match(long l, long i, boolean matched) { }
+    record ScrollAndIndex(long scroll, long index) { }
+    record Entry(Map map, Rock rock, long scroll, long index) { }
 
     @AllArgsConstructor
     static class Rock {
