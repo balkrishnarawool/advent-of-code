@@ -5,22 +5,20 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static aoc.Utils.readFile;
 
-public class Problem17 {
+public class Problem17B {
 
     public static void main(String[] args) throws IOException {
-        solvePart1("./src/aoc2022/Problem17Input1.txt");
-        solvePart1("./src/aoc2022/Problem17Input2.txt");
+        solvePart2("./src/aoc2022/Problem17Input1.txt");
+        solvePart2("./src/aoc2022/Problem17Input2.txt");
     }
 
-    private static void solvePart1(String path) throws IOException {
+    private static void solvePart2(String path) throws IOException {
         System.out.println(solve(path));
     }
 
@@ -29,19 +27,24 @@ public class Problem17 {
         var g = new Generator(lines.get(0));
         var map = new Map();
 
-        for (int i = 0; i < 2022; i++) {
-            var r = map.addRock(i%5);
-            var t = g.getNextToken();
-            map.moveRock(map, r, t);
+        long l = 0L;
+        var match = false;
+        for (long i = 0; i < 1_000_000_000_000L; i++) {
+            var r = map.addRock((int) Math.floorMod(i, 5L));
+            var tw = g.getNextToken();
+            map.moveRock(map, r, tw.t);
             while (!r.hasStopped(map)) {
                 map.moveRock(map, r, "|");
-                t = g.getNextToken();
-                map.moveRock(map, r, t);
+                tw = g.getNextToken(map, r, l, i);
+                if (!match && tw.remainder != -1) {
+                    match = true;
+                    l = tw.l; i = tw.i;
+                }
+                map.moveRock(map, r, tw.t);
             }
-            map.settle(r);
-//            show(map);
+            l += map.settle(r);
         }
-        return map.getHeight();
+        return l + map.getHeight();
     }
 
     private static void show(Map map) {
@@ -59,13 +62,100 @@ public class Problem17 {
         @NonNull
         String s;
         int index = -1;
+        List<Map> maps = new ArrayList<>();
+        List<Rock> rocks = new ArrayList<>();
+        List<Long> ls = new ArrayList<>(); // l-s
+        List<Long> is = new ArrayList<>(); // i-s
 
-        public String getNextToken() {
-            if (index == s.length()-1) index = 0;
+        public TokenWrapper getNextToken() {
+            var remainder = -1L;
+            var newL = -1L;
+            var newI = -1L;
+            if (index == s.length()-1) {
+                index = 0;
+            }
             else index++;
-            return ""+s.charAt(index);
+            return new TokenWrapper(""+s.charAt(index), newL, newI, remainder);
+        }
+
+        public TokenWrapper getNextToken(Map map, Rock r, long l, long i) {
+            var remainder = -1L;
+            var newL = -1L;
+            var newI = -1L;
+            if (index == s.length()-1) {
+                index = 0;
+                if (contains(maps, map, rocks, r)) {
+                    var i2 = getIndex(maps, map, rocks, r);
+
+                    var quotient = Math.floorDiv(1_000_000_000_000L - is.get(i2), (i - is.get(i2)));
+                    remainder = Math.floorMod(1_000_000_000_000L - is.get(i2), (i - is.get(i2)));
+                    var deltaI = (i - is.get(i2)) * quotient;
+                    newI = is.get(i2) + deltaI;
+                    var deltaL = (l - ls.get(i2)) * quotient;
+                    newL = ls.get(i2) + deltaL;
+                } else {
+                    maps.add(copy(map));
+                    rocks.add(copy(r));
+                    ls.add(l);
+                    is.add(i);
+                }
+            }
+            else index++;
+            return new TokenWrapper(""+s.charAt(index), newL, newI, remainder);
+        }
+
+        private int getIndex(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
+            for (int i = 0; i < maps.size(); i++) {
+                var r = rocks.get(i);
+                var m = maps.get(i);
+                if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return i;
+            }
+            throw new RuntimeException("Cannot find index for match");
+        }
+
+        private boolean contains(List<Map> maps, Map map, List<Rock> rocks, Rock rock) {
+            for (int i = 0; i < maps.size(); i++) {
+                var r = rocks.get(i);
+                var m = maps.get(i);
+                if (sameAs(m, map) && r.t == rock.t && r.p.equals(rock.p)) return true;
+            }
+            return false;
+        }
+
+        private boolean sameAs(Map m1, Map m2) {
+            if (m1.map.size() == m2.map.size()) {
+                for (int i = 0; i < m1.map.size(); i++) {
+                    for (int j = 0; j < m1.map.get(i).length; j++) {
+                        if (!m1.map.get(i)[j].equals(m2.map.get(i)[j])) return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private Map copy(Map map) {
+            var copy = new ArrayList<String[]>();
+            for (var row: map.map) {
+                copy.add(copy(row));
+            }
+            var copyMap = new Map();
+            copyMap.map = copy;
+            return copyMap;
+        }
+
+        private String[] copy(String[] row) {
+            var copy = new String[row.length];
+            System.arraycopy(row, 0, copy, 0, row.length);
+            return copy;
+        }
+
+        private Rock copy(Rock r) {
+            return new Rock(r.t, r.p);
         }
     }
+
+    record TokenWrapper(String t, long l, long i, long remainder) { }
 
     static class Map {
         List<String[]> map = new ArrayList<>();
@@ -103,7 +193,7 @@ public class Problem17 {
             return map.size();
         }
 
-        public void settle(Rock r) {
+        public long settle(Rock r) {
             for (int i = 0; i < r.t.length; i++) {
                 for (int j = 0; j < r.t[i].length; j++) {
                     if (r.t[i][j].equals("#")) {
@@ -112,6 +202,19 @@ public class Problem17 {
                 }
             }
             map.removeIf(e -> Arrays.equals(e, new String[]{".", ".", ".", ".", ".", ".", "."}));
+            var min = Integer.MAX_VALUE;
+            for (int i = 0; i < 7; i++) {
+                int j = map.size()-1;
+                for (; j >=0 ; j--) {
+                    if (map.get(j)[i].equals("#")) break;
+                }
+                if (j == -1) j = 0;
+                min = Math.min(min, j);
+            }
+            if (min > 0) {
+                map.subList(0, min).clear();
+            }
+            return min;
         }
     }
 
@@ -249,6 +352,6 @@ public class Problem17 {
     }
 
 //     Output
-//     3068
-//     3206
+//      1514285714288
+//      1602881844347
 }
