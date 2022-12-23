@@ -1,35 +1,20 @@
 package aoc2022;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import static aoc.Utils.readFile;
 
-public class Problem15 {
+public class Problem15A {
 
     public static void main(String[] args) throws IOException {
-//        solvePart1("./src/aoc2022/Problem15Input1.txt", 10);
-//        solvePart1("./src/aoc2022/Problem15Input2.txt", 2000000);
-//        solvePart2("./src/aoc2022/Problem15Input1.txt", 20);
-        solvePart2("./src/aoc2022/Problem15Input2.txt", 4000000);
+        solvePart1("./src/aoc2022/Problem15Input1.txt", 10);
+        solvePart1("./src/aoc2022/Problem15Input2.txt", 2000000);
     }
 
     private static void solvePart1(String path, long y) throws IOException {
         System.out.println(solve(path, y));
-    }
-
-    private static void solvePart2(String path, long d) throws IOException {
-//        System.out.println(solve2(path, d));
-        System.out.println(System.currentTimeMillis());
-        for (int i = 0; i < d; i++) {
-            for (int j = 0; j < d; j++) {
-//                System.out.println(j);
-            }
-        }
-        System.out.println(System.currentTimeMillis());
     }
 
     private static long solve(String path, long y) throws IOException {
@@ -40,16 +25,6 @@ public class Problem15 {
         return countOfEmptyPlaces(input, y, min, max);
     }
 
-    private static long solve2(String path, long d) throws IOException {
-        var lines = readFile(path);
-        var input = parseInput(lines);
-        return signal(findHiddenBeacon(input, d));
-    }
-
-    private static long signal(Point p) {
-        return p.x * 4000000 + p.y;
-    }
-
     private static Point findHiddenBeacon(Input input, long d) {
         for (int i = 0; i <= d; i++) {
             for (int j = 0; j <= d; j++) {
@@ -57,7 +32,7 @@ public class Problem15 {
                 if (!isBeaconHere(input, p) && canBeaconBeHere(input, p))
                     return p;
             }
-            System.out.println(i);
+//            System.out.println(i);
         }
         throw new RuntimeException("No beacon is hidden");
     }
@@ -67,10 +42,10 @@ public class Problem15 {
         for (long i = min.x; i <= max.x; i++) {
             var p = new Point(i, y);
             if (!isBeaconHere(input, p) && !canBeaconBeHere(input, p)) {
-                System.out.print("#");
+//                System.out.print("#");
                 c++;
             } else {
-                System.out.print(".");
+//                System.out.print(".");
             }
         }
         return c;

@@ -3,8 +3,6 @@ package aoc2022;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class Problem23 {
         var input = parseInput(lines);
 //        input.show();
         for (int i = 0; i < 10; i++) {
-            var moves = input.calculateProposedPositionsCount(); // pp = proposed positions
+            var moves = input.calculateMoves();
             input.moveElves(moves);
 //            input.show();
         }
@@ -47,7 +45,7 @@ public class Problem23 {
         var rounds = 0;
 //        input.show();
         do {
-            var moves = input.calculateProposedPositionsCount(); // pp = proposed positions
+            var moves = input.calculateMoves();
             moveCount = input.moveElves(moves);
             rounds++;
 //            input.show();
@@ -87,7 +85,7 @@ public class Problem23 {
             System.out.println();
         }
 
-        public Moves calculateProposedPositionsCount() {
+        public Moves calculateMoves() {
             var count = new int[elves.length][elves.length];
             var dir = new String[elves.length][elves.length];
             for (int[] ints : count) {
@@ -237,6 +235,7 @@ public class Problem23 {
         String[][] dir;
     }
 
+    // This keeps "sequence" of directions for each Elf. But it wasn't necessary.
     static class Elf {
         String seq = "NSWE";
 
