@@ -25,13 +25,13 @@ public class Problem25 {
         long d = 0L;
         for (int i = 0; i < num.length() ; i++) {
             char c = num.charAt(i);
-            long v = decimalUnit(c);
+            long v = snafu2d(c);
             d = d * 5 + v;
         }
         return d;
     }
 
-    private static long decimalUnit(char c) {
+    private static long snafu2d(char c) {
         return switch (c) {
             case '=' -> -2;
             case '-' -> -1;
