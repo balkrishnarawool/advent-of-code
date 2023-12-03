@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class Problem02B {
     public static void main(String[] args) {
-//        var str = Problem02Input.INPUT01;
-        var str = Problem02Input.INPUT02;
+//        var str = Problem02Input.INPUT01; //2286
+        var str = Problem02Input.INPUT02; //66363
         var games = parseGames(str);
         System.out.println(games);
         System.out.println(powerOfSets(games));

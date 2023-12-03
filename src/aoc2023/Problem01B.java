@@ -2,9 +2,9 @@ package aoc2023;
 
 public class Problem01B {
     public static void main(String[] args) {
-//        var str = Problem01Input.INPUT01;
-//        var str = Problem01Input.INPUT02;
-        var str = Problem01Input.INPUT03;
+//        var str = Problem01Input.INPUT01; //142
+//        var str = Problem01Input.INPUT02; //281
+        var str = Problem01Input.INPUT03; //53894
 
         System.out.println(
                 str.lines()
@@ -26,15 +26,15 @@ public class Problem01B {
     }
 
     private static int getFirstDigit(char[] sa, int i) {
-        if (i+2<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]).equals("one")) return 1;
-        if (i+2<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]).equals("two")) return 2;
-        if (i+4<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]+sa[i+3]+sa[i+4]).equals("three")) return 3;
-        if (i+3<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]+sa[i+3]).equals("four")) return 4;
-        if (i+3<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]+sa[i+3]).equals("five")) return 5;
-        if (i+2<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]).equals("six")) return 6;
-        if (i+4<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]+sa[i+3]+sa[i+4]).equals("seven")) return 7;
-        if (i+4<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]+sa[i+3]+sa[i+4]).equals("eight")) return 8;
-        if (i+3<sa.length && (""+sa[i]+sa[i+1]+sa[i+2]+sa[i+3]).equals("nine")) return 9;
+        if (i+2<sa.length && new String(sa, i, 3).equals("one")) return 1;
+        if (i+2<sa.length && new String(sa, i, 3).equals("two")) return 2;
+        if (i+4<sa.length && new String(sa, i, 5).equals("three")) return 3;
+        if (i+3<sa.length && new String(sa, i, 4).equals("four")) return 4;
+        if (i+3<sa.length && new String(sa, i, 4).equals("five")) return 5;
+        if (i+2<sa.length && new String(sa, i, 3).equals("six")) return 6;
+        if (i+4<sa.length && new String(sa, i, 5).equals("seven")) return 7;
+        if (i+4<sa.length && new String(sa, i, 5).equals("eight")) return 8;
+        if (i+3<sa.length && new String(sa, i, 4).equals("nine")) return 9;
         return 0;
     }
 
@@ -48,15 +48,15 @@ public class Problem01B {
     }
 
     private static int getLastDigit(char[] sa, int i) {
-        if (i>1 && (""+sa[i-2]+sa[i-1]+sa[i]).equals("one")) return 1;
-        if (i>1 && (""+sa[i-2]+sa[i-1]+sa[i]).equals("two")) return 2;
-        if (i>3 && (""+sa[i-4]+sa[i-3]+sa[i-2]+sa[i-1]+sa[i]).equals("three")) return 3;
-        if (i>2 && (""+sa[i-3]+sa[i-2]+sa[i-1]+sa[i]).equals("four")) return 4;
-        if (i>2 && (""+sa[i-3]+sa[i-2]+sa[i-1]+sa[i]).equals("five")) return 5;
-        if (i>1 && (""+sa[i-2]+sa[i-1]+sa[i]).equals("six")) return 6;
-        if (i>3 && (""+sa[i-4]+sa[i-3]+sa[i-2]+sa[i-1]+sa[i]).equals("seven")) return 7;
-        if (i>3 && (""+sa[i-4]+sa[i-3]+sa[i-2]+sa[i-1]+sa[i]).equals("eight")) return 8;
-        if (i>2 && (""+sa[i-3]+sa[i-2]+sa[i-1]+sa[i]).equals("nine")) return 9;
+        if (i>1 && new String(sa, i-2, 3).equals("one")) return 1;
+        if (i>1 && new String(sa, i-2, 3).equals("two")) return 2;
+        if (i>3 && new String(sa, i-4, 5).equals("three")) return 3;
+        if (i>2 && new String(sa, i-3, 4).equals("four")) return 4;
+        if (i>2 && new String(sa, i-3, 4).equals("five")) return 5;
+        if (i>1 && new String(sa, i-2, 3).equals("six")) return 6;
+        if (i>3 && new String(sa, i-4, 5).equals("seven")) return 7;
+        if (i>3 && new String(sa, i-4, 5).equals("eight")) return 8;
+        if (i>2 && new String(sa, i-3, 4).equals("nine")) return 9;
         return 0;
     }
 

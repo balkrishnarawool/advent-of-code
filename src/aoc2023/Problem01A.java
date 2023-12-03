@@ -2,9 +2,10 @@ package aoc2023;
 
 public class Problem01A {
     public static void main(String[] args) {
-//        var str = Problem01Input.INPUT01;
-//        var str = Problem01Input.INPUT02;
-        var str = Problem01Input.INPUT03;
+//        var str = Problem01Input.INPUT01; //142
+//        var str = Problem01Input.INPUT02; //209
+        var str = Problem01Input.INPUT03; //53651
+
         System.out.println(
                 str.lines()
                         .map(Problem01A::calibration)

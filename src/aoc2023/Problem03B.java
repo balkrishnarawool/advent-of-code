@@ -68,13 +68,12 @@ public class Problem03B {
         int num = number(sa2d, row, start, end);
         for (int i = start; i <= end ; i++) {
             if (i == start) {
-                if (!(checkDot(num, sa2d, row-1, i-1) && checkDot(num, sa2d, row-1, i) && checkDot(num, sa2d, row, i-1) && checkDot(num, sa2d, row+1, i-1) && checkDot(num, sa2d, row+1, i))) return false;
+                if (!(checkDot(num, sa2d, row-1, i-1) && checkDot(num, sa2d, row, i-1) && checkDot(num, sa2d, row+1, i-1) )) return false;
             }
             if (i == end ) {
-                if (!(checkDot(num, sa2d, row-1, i) && checkDot(num, sa2d, row-1, i+1) && checkDot(num, sa2d, row, i+1) && checkDot(num, sa2d, row+1, i) && checkDot(num, sa2d, row+1, i+1))) return false;
-            } else {
-                if (!(checkDot(num, sa2d, row-1, i) && checkDot(num, sa2d, row+1, i))) return false;
+                if (!(checkDot(num, sa2d, row-1, i+1) && checkDot(num, sa2d, row, i+1)  && checkDot(num, sa2d, row+1, i+1))) return false;
             }
+            if (!(checkDot(num, sa2d, row-1, i) && checkDot(num, sa2d, row+1, i))) return false;
         }
         return true;
     }

@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class Problem02A {
     public static void main(String[] args) {
-//        var str = Problem02Input.INPUT01;
-        var str = Problem02Input.INPUT02;
+//        var str = Problem02Input.INPUT01; //8
+        var str = Problem02Input.INPUT02; //2369
         int maxRed = 12, maxGreen = 13, maxBlue = 14;
         var games = parseGames(str);
         System.out.println(games);

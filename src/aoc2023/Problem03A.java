@@ -7,9 +7,8 @@ import java.util.List;
 
 public class Problem03A {
     public static void main(String[] args) {
-//        var str = Problem03Input.INPUT01;
-        var str = Problem03Input.INPUT02;
-//        var str = Problem03Input.INPUT03;
+//        var str = Problem03Input.INPUT01; //4361
+        var str = Problem03Input.INPUT02; //549908
 
         var sa2d = Utils.stringArrayToChar2DArray(str.lines().toArray(String[]::new));
         int sum = 0;
@@ -50,13 +49,12 @@ public class Problem03A {
     private static boolean checkNonPartNumber(char[][] sa2d, int row, int start, int end) {
         for (int i = start; i <= end ; i++) {
             if (i == start) {
-                if (!(checkDot(sa2d, row-1, i-1) && checkDot(sa2d, row-1, i) && checkDot(sa2d, row, i-1) && checkDot(sa2d, row+1, i-1) && checkDot(sa2d, row+1, i))) return false;
+                if (!(checkDot(sa2d, row-1, i-1) && checkDot(sa2d, row, i-1) && checkDot(sa2d, row+1, i-1) )) return false;
             }
             if (i == end ) {
-                if (!(checkDot(sa2d, row-1, i) && checkDot(sa2d, row-1, i+1) && checkDot(sa2d, row, i+1) && checkDot(sa2d, row+1, i) && checkDot(sa2d, row+1, i+1))) return false;
-            } else {
-                if (!(checkDot(sa2d, row-1, i) && checkDot(sa2d, row+1, i))) return false;
+                if (!(checkDot(sa2d, row-1, i+1) && checkDot(sa2d, row, i+1)  && checkDot(sa2d, row+1, i+1))) return false;
             }
+            if (!(checkDot(sa2d, row-1, i) && checkDot(sa2d, row+1, i))) return false;
         }
         return true;
     }
