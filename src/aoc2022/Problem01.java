@@ -17,9 +17,9 @@ public class Problem01 {
 
         System.out.println(Math.abs(Integer.MIN_VALUE));
 
-        solvePart1("./src/aoc2022/Problem01Input1.txt");
+        solvePart1("./src/aoc2022/Problem01Input.java");
         solvePart1("./src/aoc2022/Problem01Input2.txt");
-        solvePart2("./src/aoc2022/Problem01Input1.txt");
+        solvePart2("./src/aoc2022/Problem01Input.java");
         solvePart2("./src/aoc2022/Problem01Input2.txt");
     }
 

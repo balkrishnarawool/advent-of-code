@@ -20,7 +20,7 @@ public class Problem01 {
     }
 
     public static void main(String[] args) {
-        int[] input1 = stringToIntArray(fileToStringArray(Problem01.class, "Problem01Input1.txt"));
+        int[] input1 = stringToIntArray(fileToStringArray(Problem01.class, "Problem01Input.java"));
         int[] input2 = stringToIntArray(fileToStringArray(Problem01.class, "Problem01Input2.txt"));
 
         System.out.println(countIncreased(input1));
