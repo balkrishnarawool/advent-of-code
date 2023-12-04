@@ -20,12 +20,12 @@ public class Problem01B {
         var sa = s.toCharArray();
         for (int i = 0; i < sa.length; i++) {
             if (sa[i] >= '1' && sa[i]<= '9') return Integer.parseInt(""+sa[i]);
-            if (getFirstDigit(sa, i) > 0) return getFirstDigit(sa, i);
+            if (getDigit(sa, i) > 0) return getDigit(sa, i);
         }
         return 0;
     }
 
-    private static int getFirstDigit(char[] sa, int i) {
+    private static int getDigit(char[] sa, int i) {
         if (i+2<sa.length && new String(sa, i, 3).equals("one")) return 1;
         if (i+2<sa.length && new String(sa, i, 3).equals("two")) return 2;
         if (i+4<sa.length && new String(sa, i, 5).equals("three")) return 3;
@@ -42,12 +42,12 @@ public class Problem01B {
         var sa = s.toCharArray();
         for (int i = sa.length-1; i >= 0; i--) {
             if (sa[i] >= '0' && sa[i]<= '9') return Integer.parseInt(""+sa[i]);
-            if (getLastDigit(sa, i) > 0) return getLastDigit(sa, i);
+            if (getReversedDigit(sa, i) > 0) return getReversedDigit(sa, i);
         }
         return 0;
     }
 
-    private static int getLastDigit(char[] sa, int i) {
+    private static int getReversedDigit(char[] sa, int i) {
         if (i>1 && new String(sa, i-2, 3).equals("one")) return 1;
         if (i>1 && new String(sa, i-2, 3).equals("two")) return 2;
         if (i>3 && new String(sa, i-4, 5).equals("three")) return 3;
