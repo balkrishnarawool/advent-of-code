@@ -8,61 +8,60 @@ import java.util.Map;
 public class Problem07B {
     public static void main(String[] args) {
 //        var str = Problem07Input.INPUT01; // 5905
-//        var str = Problem07Input.INPUT02; // 250384185
-        var str = Problem07Input.INPUT03;
+        var str = Problem07Input.INPUT02; // 250384185
 
-        var hands = new ArrayList<>(str.lines()
-                .map(Problem07B::parse)
-                .toList());
-//        hands.sort(new HandComparator());
-        sort(hands);
+        var hands = new ArrayList<>(str.lines().map(Problem07B::parse).toList());
+        hands.sort(new HandComparator());
         System.out.println(winnings(hands));
     }
 
-    private static void sort(ArrayList<Hand> hands) {
-        var comparator = new HandComparator();
-        for (int i = 0; i < hands.size(); i++) {
-            for (int j = 0; j < hands.size()-1-i; j++) {
-                if (comparator.compare(hands.get(j), hands.get(j+1)) > 0) { hands.add(j+2, hands.get(j)); hands.remove(j); }
-            }
-        }
-    }
-
-    private static long winnings(ArrayList<Hand> hands) {
-        var w = 0L;
-        for (int i = 0; i < hands.size(); i++) {
-            w += (hands.get(i).bid * (i+1));
-        }
-        return w;
-    }
-
     record Hand(String cards, long bid) {
-        public boolean isFiveOfAKind() {
+        enum Type {
+            FIVE_OF_A_KIND,
+            FOUR_OF_A_KIND,
+            FULL_HOUSE,
+            THREE_OF_A_KIND,
+            TWO_PAIR,
+            ONE_PAIR,
+            HIGH_CARD
+        }
+
+        Hand.Type getType() {
+            return isFiveOfAKind() ? Hand.Type.FIVE_OF_A_KIND
+                    : isFourOfAKind() ? Hand.Type.FOUR_OF_A_KIND
+                    : isFullHouse() ? Hand.Type.FULL_HOUSE
+                    : isThreeOfAKind() ? Hand.Type.THREE_OF_A_KIND
+                    : isTwoPair() ? Hand.Type.TWO_PAIR
+                    : isOnePair() ? Hand.Type.ONE_PAIR
+                    : Hand.Type.HIGH_CARD;
+        }
+
+        private boolean isFiveOfAKind() {
             var map = cardsToMap(cards);
             return map.values().stream().anyMatch(v -> v == 5);
         }
 
-        public boolean isFourOfAKind() {
+        private boolean isFourOfAKind() {
             var map = cardsToMap(cards);
             return map.values().stream().anyMatch(v -> v == 4);
         }
 
-        public boolean isFullHouse() {
+        private boolean isFullHouse() {
             var map = cardsToMap(cards);
             return map.keySet().size() == 2 && map.values().stream().anyMatch(v -> v == 3);
         }
 
-        public boolean isThreeOfAKind() {
+        private boolean isThreeOfAKind() {
             var map = cardsToMap(cards);
             return map.keySet().size() > 2 && map.values().stream().anyMatch(v -> v == 3);
         }
 
-        public boolean isTwoPair() {
+        private boolean isTwoPair() {
             var map = cardsToMap(cards);
             return map.keySet().size() == 3 && map.values().stream().anyMatch(v -> v == 2);
         }
 
-        public boolean isOnePair() {
+        private boolean isOnePair() {
             var map = cardsToMap(cards);
             return map.keySet().size() == 4 && map.values().stream().anyMatch(v -> v == 2);
         }
@@ -79,35 +78,19 @@ public class Problem07B {
     }
 
     private static class HandComparator implements Comparator<Hand> {
+        private static final Map<Hand.Type, Integer> TYPE_ORDER = Map.of(
+                Hand.Type.HIGH_CARD, 1,
+                Hand.Type.ONE_PAIR, 2,
+                Hand.Type.TWO_PAIR, 3,
+                Hand.Type.THREE_OF_A_KIND, 4,
+                Hand.Type.FULL_HOUSE, 5,
+                Hand.Type.FOUR_OF_A_KIND, 6,
+                Hand.Type.FIVE_OF_A_KIND, 7);
 
-        @Override
         public int compare(Hand h1, Hand h2) {
-            if (h1.isFiveOfAKind()) {
-                if (h2.isFiveOfAKind()) { return compareCards(h1, h2); }
-                else return 1;
-            } else if (h1.isFourOfAKind()) {
-                    if (h2.isFiveOfAKind()) { return -1; }
-                    else if (h2.isFourOfAKind()) { return compareCards(h1, h2); }
-                    else return 1;
-            } else if (h1.isFullHouse()) {
-                    if (h2.isFiveOfAKind() || h2.isFourOfAKind()) { return -1; }
-                    else if (h2.isFullHouse()) { return compareCards(h1, h2); }
-                    else return 1;
-            } else if (h1.isThreeOfAKind()) {
-                if (h2.isFiveOfAKind() || h2.isFourOfAKind() || h2.isFullHouse()) { return -1; }
-                else if (h2.isThreeOfAKind()) { return compareCards(h1, h2); }
-                else return 1;
-            } else if (h1.isTwoPair()) {
-                if (h2.isFiveOfAKind() || h2.isFourOfAKind() || h2.isFullHouse() || h2.isThreeOfAKind()) { return -1; }
-                else if (h2.isTwoPair()) { return compareCards(h1, h2); }
-                else return 1;
-            } else if (h1.isOnePair()) {
-                if (h2.isFiveOfAKind() || h2.isFourOfAKind() || h2.isFullHouse() || h2.isThreeOfAKind() || h2.isTwoPair()) { return -1; }
-                else if (h2.isOnePair()) { return compareCards(h1, h2); }
-                else return 1;
-            } else
-                if (h2.isFiveOfAKind() || h2.isFourOfAKind() || h2.isFullHouse() || h2.isThreeOfAKind() || h2.isTwoPair() || h2.isOnePair()) { return -1; }
-                return compareCards(h1, h2);
+            var t1 = TYPE_ORDER.get(h1.getType());
+            var t2 = TYPE_ORDER.get(h2.getType());
+            return t1 > t2 ? 1 : (t1 < t2 ? -1 : compareCards(h1, h2));
         }
 
         private int compareCards(Hand h1, Hand h2) {
@@ -117,26 +100,22 @@ public class Problem07B {
             throw new RuntimeException("Both hands same: "+h1 +" "+h2);
         }
 
+        private static final String CARD_ORDER = "J23456789TQKA";
         private int higher(char c1, char c2) {
-            if (c1 == 'A') return 1;
-            else if (c1 == 'K') return (c2 == 'A') ? -1 : 1;
-            else if (c1 == 'Q') return (c2 == 'A' || c2 == 'K') ? -1 : 1;
-            else if (c1 == 'T') return (c2 == 'A' || c2 == 'K' || c2 == 'Q' ) ? -1 : 1;
-            else if (c1 == '9') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T') ? -1 : 1;
-            else if (c1 == '8') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9') ? -1 : 1;
-            else if (c1 == '7') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9' || c2 == '8') ? -1 : 1;
-            else if (c1 == '6') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9' || c2 == '8' || c2 == '7') ? -1 : 1;
-            else if (c1 == '5') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9' || c2 == '8' || c2 == '7' || c2 == '6') ? -1 : 1;
-            else if (c1 == '4') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9' || c2 == '8' || c2 == '7' || c2 == '6' || c2 == '5') ? -1 : 1;
-            else if (c1 == '3') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9' || c2 == '8' || c2 == '7' || c2 == '6' || c2 == '5' || c2 == '4') ? -1 : 1;
-            else if (c1 == '2') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9' || c2 == '8' || c2 == '7' || c2 == '6' || c2 == '5' || c2 == '4' || c2 == '3') ? -1 : 1;
-            else if (c1 == 'J') return (c2 == 'A' || c2 == 'K' || c2 == 'Q'  || c2 == 'T' || c2 == '9' || c2 == '8' || c2 == '7' || c2 == '6' || c2 == '5' || c2 == '4' || c2 == '3' || c2 == '2') ? -1 : 1;
-            throw new RuntimeException("Illegal cards: "+c1+" "+c2);
+            return CARD_ORDER.indexOf(c1) > CARD_ORDER.indexOf(c2) ? 1 : -1;
         }
     }
 
     private static Hand parse(String s) {
         var sa = s.split("\\s+");
         return new Hand(sa[0], Long.parseLong(sa[1]));
+    }
+
+    private static long winnings(ArrayList<Hand> hands) {
+        var w = 0L;
+        for (int i = 0; i < hands.size(); i++) {
+            w += (hands.get(i).bid * (i+1));
+        }
+        return w;
     }
 }
