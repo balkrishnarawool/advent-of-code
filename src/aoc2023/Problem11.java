@@ -1,6 +1,6 @@
 package aoc2023;
 
-public class Problem10 {
+public class Problem11 {
     public static void main(String[] args) {
         var str = Problem03Input.INPUT01;
 //        var str = Problem03Input.INPUT02;
@@ -8,7 +8,7 @@ public class Problem10 {
 
         System.out.println(
                 str.lines()
-                        .map(Problem10::solve)
+                        .map(Problem11::solve)
         );
     }
 
